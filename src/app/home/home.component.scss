@@ -1,0 +1,254 @@
+@import '~assets/styles/style';
+.submit-btn {
+  cursor: pointer;
+  transition: all 0.4s ease-in-out;
+  &:hover {
+    background: $accent-background;
+    transition: all 0.4s ease-in-out;
+  }
+}
+
+.search-container>input {
+  width: 70vw;
+  margin-left: 15vw;
+  font-size: 2em;
+  text-align: center;
+  padding: 10px;
+}
+md-toolbar {
+  padding: 0 30px;
+}
+
+#home-tagline {
+  text-align: center;
+  font-weight: 200;
+  div {
+    font-size: 1.4em;
+    margin: 0 10px 0 5px;
+    color: $primary-color;
+    font-weight: 600;
+    display: inline-block;
+    transform: translateY(3px);
+  }
+}
+
+.bounty-card {
+  width: 80%;
+  height: 200px;
+  margin-left: 10%;
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .2);
+  margin: 8px;
+  .neighborhood {
+    width: 25%;
+    text-align: center;
+    top: 63px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    color: white;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    .media {
+      background-color: lightgrey;
+      height: 170px;
+    }
+    .hood_name {
+      height: 30px;
+      background-color: #49BDAD;
+    }
+  }
+  .details {
+    flex: 1;
+    width: calc(75%- 40px);
+    
+    padding: 10px;
+   
+    .summary {
+      font-size: 24px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .bounty-meter {
+      width: 80%;
+      height: 20px;
+      background: white;
+      border-radius: 10px;
+      margin: 10px;
+      border: solid 1px gainsboro;
+      .progress{
+        background-color: #49BDAD;
+        width:calc((50/100)*100%);
+        
+      }
+    }
+    .bounty-container{
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+  .actions {
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    &:hover {
+      transform: rotate(8deg);
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+    img {
+      height: 80px!important;
+      width: 80px;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .26);
+      border-radius: 50%;
+    }
+  }
+}
+
+
+
+img.contributor {
+  max-width: 48px;
+  border-radius: 50%;
+  margin: 5px;
+  display: inline;
+  border: solid 2px #49BDAD;
+}
+
+.contributors {
+  display: inline-block;
+  max-height: 48px;
+  margin-left: 15px;
+}
+
+.header {
+  background-color: #49bdad;
+  .header-logo {
+    padding: 30px;
+  }
+  div,
+  a {
+    display: inline-block;
+  }
+  .header-actions {
+    float: right;
+    cursor: pointer;
+    ul {
+      margin: 0;
+      list-style: none;
+      padding: 0;
+      li {
+        display: block;
+        float: left;
+        padding: 30px;
+        height: 100%;
+        line-height: 50px;
+        font-size: 1.5em;
+        font-weight: 600;
+        color: white;
+      }
+    }
+  }
+}
+
+.bounty-meter>.progress {
+  height: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  max-width: calc(100% - 10px);
+  width: 0;
+  transition: width 0.4s ease-in-out;
+}
+
+.filters-container {
+  width: 80%;
+  margin-left: 10%;
+  margin-top: 25px;
+}
+
+.filters-container>div {
+  display: inline-block;
+}
+
+.filters-container>.label {
+  padding: 25px;
+  font-weight: 600;
+}
+
+.type.ng-binding {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 20px;
+  display: inline-block;
+  background: #49BDAD;
+  color: white;
+  font-size: .8em;
+  font-weight: 500;
+}
+
+.summary>.summary-label {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px;
+  color: white;
+  margin: 0 5px;
+  font-weight: 600;
+  border-radius: 12px;
+  transform: translateY(-3px);
+}
+
+form>* {
+  margin: 10px;
+  margin-top: 20px;
+}
+
+.submit-btn{
+  height: 100%;
+  padding: 10px;
+
+}
+
+.geo {
+  margin: 0 20px;
+  background-color: gainsboro;
+  padding: 10px;
+  font-weight: 200;
+  cursor: pointer;
+}
+
+.geo:hover {
+  background-color: #49bdad;
+}
+
+.popup-contents {
+  margin: 10px;
+}
+
+.vision {
+  font-size: 2em;
+  font-weight: 200;
+  text-align: center;
+}
+
+.vision>span {
+  font-weight: 400;
+  margin-left: 5px;
+}
+
+.tagline-descr {
+  text-align: center;
+}
+
+.container {
+  margin: 100px 50px 200px 100px;
+  display: block;
+}
+
+agm-map {
+  height: 300px;
+}

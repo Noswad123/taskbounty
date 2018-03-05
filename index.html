@@ -1,0 +1,288 @@
+<html ng-app="taskbounty">
+
+<head>
+    <title>TaskBounty</title>
+	<link rel="icon"
+      type="image/png"
+      href="tb_fav.png"/>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css"></link>
+    <link rel="stylesheet" href="./css/taskBountyStyles.css"></link>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>
+	<link rel="stylesheet" href="./css/leafletStyles.css"></link>
+  <link rel="stylesheet" href="./css/animate.css"></link>
+<!--
+	<script src="leafletjs.jsdbx"></script>
+	<script src="taskBountyMaps.jsdbx"/>
+	script src="leafletAngular.jsdbx"></script-->
+
+	
+</head>
+
+<body ng-controller="homeController as home" id="appContainer">
+
+	<div class="top-info">
+		<div class="header">
+			<a href="taskbounty.do"><div class="header-logo"><img src="taskbounty.jpg"/></div></a>
+			<div class="header-actions">
+				<ul>
+					<li class="submit-button" ng-click="home.showAbout($event)">About</li>
+					<li class="accent-background submit-btn" ng-click="home.showSubmit($event)">Submit Task</li>
+				</ul>
+			</div>
+		</div>
+		<h2 id="home-tagline">There are currently <div>{{home.total_jobs}}</div> open jobs</h2>
+		<div class = "search-container">
+			<input placeholder="Search for Jobs" ng-model="home.jobs_filter"/>
+		</div>
+		<div class = "filters-container">
+			<div class="label">
+				FILTERS
+			</div>
+			<!--div class="geo" ng-click="home.getLocation()">
+				<div ng-if="!home.myLat">MY NEIGHBORHOOD</div>
+				<div ng-if="home.myLat">{{home.myLat}}, {{home.myLng}}</div>
+			</div>
+			<div class="geo">
+				<div>HIGHEST BOUNTY</div>
+			</div-->
+			<div class="geo" ng-click="home.map_view=!home.map_view">
+				<div><span ng-if="!home.map_view">MAP</span><span ng-if="home.map_view">LIST</span> VIEW</div>
+			</div>
+		</div>
+	</div>
+
+	<iframe src="/leafletWrapper.do?sysparm_zoom=12" ng-show="home.map_view" frameborder="0" width="100%" height="500px"/>
+
+	<div class="container" ng-show = "!home.map_view">
+
+		<md-card class="job-card" ng-repeat="job in home.open_jobs | filter : home.jobs_filter">
+			<div class="neighborhood">{{job.neighborhood}}</div>
+			<div class="media">
+				<iframe width="100%" height="200px" ng-src="{{job.loc_src}}" frameborder="0"/>
+			</div>
+			<div class="details">
+				<div class="summary"><div class="summary-label" style="background:{{job.statusLabelColor}};">{{job.status}}</div> {{job.summary}}</div>
+				<div class="type">{{job.type}}</div>
+				<div class="bounty-container">
+					<div class="bounty">$ {{job.totalBounty}}</div>
+					<div class="bounty right">$ {{job.averageBounty}}</div>
+				</div>
+				<div class="bounty-meter">
+					<div class="progress" style="width: {{job.percentComplete}}%; background:{{job.meterColor}}"></div>
+				</div>
+			</div>
+			<div class="actions" ng-click="home.showContribute($event, job)">
+				<img src="fund.png"/>
+			</div>
+			<div class="contributors">
+				<img class="contributor" ng-repeat="image in job.contributors" ng-src="{{image}}"/>
+			</div>
+		</md-card>
+
+	</div>
+
+	<div class="footer">
+			<div class="header-logo"><img src="taskbountylogo.png"/></div>
+	</div>
+
+</body>
+
+<script>
+(function() {
+	var app = angular.module("taskbounty", ["ngMaterial"])
+	.config(function($mdThemingProvider) {
+		$mdThemingProvider.theme('default')
+		.primaryPalette('teal')
+		.accentPalette('deep-orange');
+	});
+
+	var homepage = function($http, $mdDialog, $mdMedia) {
+		var home = this;
+
+		home.title = "TASK BOUNTY";
+		home.open_jobs = [];
+
+		$http.get('/api/8380/task_bounty/openTasks')
+		.then(function successCallback(response) {
+			home.open_jobs = response.data.result.jobs;
+			home.total_jobs = response.data.result.numOpen;
+			console.log(response);
+		}, function errorCallback(response) {
+			console.log(response);
+		});
+
+		home.submitJob = function() {
+			window.alert("Submitting new job!");
+		};
+
+		home.getLocation = function() {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(home.showPosition);
+			} else {
+				console.log("Geolocation is not supported by this browser.");
+			}
+		};
+
+		home.showPosition = function(position) {
+			home.myLat = position.coords.latitude;
+			home.myLng = position.coords.longitude;
+		};
+
+		home.showSubmit = function(ev) {
+			var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) ;
+			$mdDialog.show({
+				controller: SubmitController,
+				controllerAs: 'submit',
+				bindToController: true,
+				//templateUrl: 'AJAXJellyRunner.do?template=submitTaskBounty',
+				templateUrl: 'taskBountySubmit.do',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose:true,
+				fullscreen: useFullScreen
+			})
+			.then(function(answer) {
+				console.log(answer);
+			}, function() {
+
+			});
+		};
+
+		home.showAbout = function(ev) {
+			var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) ;
+			$mdDialog.show({
+				controller: AboutController,
+				controllerAs: 'about',
+				bindToController: true,
+				templateUrl: 'taskBountyAbout.do',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose:true,
+				fullscreen: useFullScreen
+			});
+		};
+
+		home.showContribute = function(ev, job) {
+			var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) ;
+			$mdDialog.show({
+				controller: ContributeController,
+				controllerAs: 'contribute',
+				bindToController: true,
+				templateUrl: 'taskBountyContribute.do',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose:true,
+				fullscreen: useFullScreen,
+				locals: {
+					job: job
+				}
+			})
+			.then(function(answer) {
+				console.log(answer);
+			}, function() {
+
+			});
+		};
+
+	};
+
+	AboutController.$inject = ['$mdDialog'];
+	function AboutController($mdDialog) {
+		var about = this;
+
+		about.close = function() {
+			$mdDialog.cancel();
+		};
+	}
+
+	SubmitController.$inject = ['$mdDialog', '$http'];
+	function SubmitController($mdDialog, $http) {
+		var submit = this;
+
+		submit.close = function() {
+			$mdDialog.cancel();
+		};
+
+		navigator.geolocation.getCurrentPosition(showPosition);
+
+		function showPosition(position) {
+			submit.latitude = position.coords.latitude;
+			submit.longitude = position.coords.longitude;
+		}
+
+		// form data
+		submit.create = function() {
+			if (!submit.task || !submit.latitude || !submit.longitude || !submit.bounty) {
+				console.log("Fill out all fields");
+				return;
+			}
+
+			var post_data = {
+				lat: submit.latitude,
+				lng: submit.longitude,
+				summary: submit.task,
+				totalBounty: submit.bounty,
+				image: ""
+			};
+			console.log(post_data);
+
+			$http.post('/api/8380/task_bounty/submitTask', post_data)
+			.then(function successCallback(response) {
+				$mdDialog.cancel();
+				location.reload();
+			}, function errorCallback(response) {
+				$mdDialog.cancel();
+				console.log(response);
+			});
+		};
+	}
+
+	ContributeController.$inject = ['$mdDialog', '$http'];
+	function ContributeController($mdDialog, $http) {
+		var contribute = this;
+
+		contribute.title = "CONTRIBUTE TO BOUNTY";
+
+		contribute.close = function() {
+			$mdDialog.cancel();
+		};
+
+		contribute.jobId = contribute.job.id;
+		contribute.jobName = contribute.job.summary;
+		contribute.oldAmount = contribute.job.totalBounty;
+		contribute.reqAmount = contribute.job.averageBounty;
+
+		// form data
+		contribute.create = function() {
+			if(!contribute.bounty) {
+				console.log("Fill out bounty");
+				return;
+			}
+
+			var post_data = {
+				id: contribute.jobId,
+				amount: contribute.bounty
+			};
+			console.log(post_data);
+			$http.post('/api/8380/task_bounty/submitBounty', post_data)
+			.then(function successCallback(response) {
+				$mdDialog.cancel();
+				location.reload();
+			}, function errorCallback(response) {
+				$mdDialog.cancel();
+				console.log(response);
+			});
+
+		};
+	}
+
+	app.controller("homeController",  ['$http', '$mdDialog', '$mdMedia', homepage]);
+})();
+</script>
+
+</html>

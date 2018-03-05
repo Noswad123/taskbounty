@@ -1,0 +1,77 @@
+<div class="top-info">
+  <div class="header">
+    <a href="taskbounty.do">
+      <div class="header-logo">
+        <img src="assets/taskbountylogo.png" />
+      </div>
+    </a>
+    <div class="header-actions">
+      <ul>
+        <li class="submit-btn">About</li>
+        <li class="submit-btn">Submit Task</li>
+      </ul>
+    </div>
+  </div>
+  <h2 id="home-tagline">There are currently
+    <div>{{bounties.length}}</div> open bounties</h2>
+  <div class="search-container">
+    <input placeholder="Search for bounties" ng-model="home.bountys_filter" />
+  </div>
+  <div class="filters-container">
+    <div class="label">
+      FILTERS
+    </div>
+
+    <div class="geo" (click)="changeView()">
+      <div *ngIf="view=='map_view'">
+        <span>list view </span>
+      </div>
+      <div *ngIf="view=='list_view'">
+        <span>Map view </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="container" *ngIf="view=='list_view'">
+
+  <div class="bounty-card" *ngFor="let bounty of bounties">
+    <div class="neighborhood">
+      <div class="media">
+        <div class="map">
+
+        </div>
+      </div>
+      <div class="hood_name">{{bounty.neighborhood}}</div>
+
+    </div>
+    <div class="details">
+      <div class="summary">
+        <div class="summary-label">{{bounty.status}}</div> {{bounty.summary}}</div>
+      <div class="type">{{bounty.type}}</div>
+
+      <div class="bounty-meter">
+        <div class="progress"></div>
+      </div>
+      <div class="bounty-container">
+			<div class="bounty right">${{bounty.moneyRaised}}</div>
+        <div class="bounty">${{bounty.goal}}</div>
+        
+      </div>
+
+    </div>
+    <div class="actions" ng-click="home.showContribute($event, bounty)">
+      <img src="assets/fund.png" />
+    </div>
+    <div class="contributors">
+      <!--<img class="contributor" ng-repeat="image in bounty.contributors" ng-src="{{image}}"/>-->
+    </div>
+  </div>
+</div>
+<div class="container" *ngIf="view=='map_view'">
+  <agm-map [latitude]="lat" [longitude]="lng">
+    <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+  </agm-map>
+</div>
